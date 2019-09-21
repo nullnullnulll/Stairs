@@ -1,0 +1,67 @@
+setup form !!t02
+	title '盘梯工具'
+	frame .frame1 |盘梯定位|
+	button.ce 'ce'
+	paragraph.name width 15 height 1
+	path down
+	text.East'East :' at x1 ymax is REAL
+	text.North'North:' at x1 ymax is REAL
+	text.Up'Up   :' at x1 ymax is REAL
+	exit
+	frame .frame2|盘梯属性|
+	path down
+	text.text1 Tagwidth 15 '名  称:'at x1 ymax is STRING
+	text.dimeter Tagwidth 15 '盘梯内径:'at x1 ymax is REAL
+	text.heigh Tagwidth 15 '盘梯高度:'at x1 ymax is REAL
+	text.width Tagwidth 15 '盘梯宽度:'at x1 ymax is REAL
+	text.ang Tagwidth 15 '盘梯角度:'at x1 ymax is REAL
+	text.stang Tagwidth 15 '起始角度:'at x1 ymax is REAL
+	paragraph.st1 text|(East = 0)| width 15 height 1
+	path right
+	button.apply 'apply' at xmax
+	exit
+exit
+
+define method .t02()
+	!this.name.val = '设备名称'
+	!this.East.val = 0
+	!this.North.val = 0
+	!this.Up.val = 0
+	!this.dimeter.val = 0
+	!this.heigh.val = 0
+	!this.width.val = 800
+	!this.ang.val = 180
+	!this.stang.val = 0
+	!this.ce.callback = '!this.ce()'
+	!this.text1.val = 'panti01'
+	!this.apply.callback = '!this.apply()'
+endmethod
+
+define method .ce()
+	!name = name
+	!pos1 = pos
+	!this.name.val = '$!name'
+	!this.East.val = $!pos1.east
+	!this.North.val = $!pos1.north
+	!this.Up.val = $!pos1.up
+endmethod
+
+define method .apply()
+	!w = !this.width.val / 2
+	!tname = !this.text1.val
+	!r = !this.dimeter.val / 2
+	!e = !this.East.val +!r + !w	
+	new stru /$!tname
+	new box 
+	xlen $!this.width.val ylen 300 zlen 25
+	POS E $!e N $!this.North.val U $!this.Up.val
+	rotate thro $!this.name.val about u by $!this.stang.val
+	--Copy Prev
+	!step = int(!this.heigh.val / 200) - 2
+	!ang = !this.ang.val / !step
+	do !x from 0 to !step
+		new box Copy Prev
+		rotate thro $!this.name.val about u by $!ang
+		by u 200
+	enddo
+endmethod
